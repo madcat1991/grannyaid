@@ -14,5 +14,18 @@ dependencyResolutionManagement {
     }
 }
 
+// Workaround for JDK image transform issue
+gradle.projectsLoaded {
+    allprojects {
+        plugins.withId('com.android.application') {
+            android.compileOptions {
+                // Force Java 11 compatibility
+                sourceCompatibility = JavaVersion.VERSION_11
+                targetCompatibility = JavaVersion.VERSION_11
+            }
+        }
+    }
+}
+
 rootProject.name = "GrannyAid"
 include ':app'
