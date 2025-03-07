@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Circle background -->
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#4CAF50" />
+            <size android:width="108dp" android:height="108dp" />
+        </shape>
+    </item>
+    
+    <!-- First letter "G" -->
+    <item android:top="25dp" android:left="25dp" android:right="25dp" android:bottom="25dp">
+        <shape android:shape="oval">
+            <stroke android:color="#FFFFFF" android:width="8dp" />
+        </shape>
+    </item>
+    
+    <!-- Line for letter "A" -->
+    <item android:top="38dp" android:right="38dp" android:left="38dp" android:bottom="45dp">
+        <rotate android:fromDegrees="45">
+            <shape android:shape="line">
+                <stroke android:color="#FFFFFF" android:width="8dp" />
+            </shape>
+        </rotate>
+    </item>
+</layer-list>
