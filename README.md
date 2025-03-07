@@ -119,6 +119,13 @@ The app requires special permissions to modify system settings. When prompted, p
    - Update build.gradle files to use the appropriate syntax for your Gradle version
    - Try Build > Clean Project followed by Build > Rebuild Project
 
+5. **AndroidX dependency issues**:
+   - If you see "Configuration contains AndroidX dependencies, but android.useAndroidX is not enabled":
+   - Create or edit gradle.properties file in the project root
+   - Add the line: `android.useAndroidX=true`
+   - Also consider adding: `android.enableJetifier=true` to auto-convert third-party libraries
+   - Sync the project again
+
 ### Runtime Issues
 
 1. **Settings don't change when "Fix It" is pressed**:
