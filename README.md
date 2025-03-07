@@ -110,6 +110,13 @@ The app requires special permissions to modify system settings. When prompted, p
    - Check that all referenced resources exist
    - Try Build > Clean Project followed by Build > Rebuild Project
 
+4. **"Cannot use @TaskAction annotation" or IncrementalTaskInputs error**:
+   - This is usually a Gradle version compatibility issue
+   - Make sure your gradle-wrapper.properties file has a compatible Gradle version (7.5 recommended)
+   - In app/build.gradle, add the namespace property to the android section
+   - Remove the package attribute from the manifest file
+   - Try Build > Clean Project followed by Build > Rebuild Project
+
 ### Runtime Issues
 
 1. **Settings don't change when "Fix It" is pressed**:

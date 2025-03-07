@@ -3,6 +3,7 @@ plugins {
 }
 
 android {
+    namespace "com.example.grannyaid"
     compileSdkVersion 33
     defaultConfig {
         applicationId "com.example.grannyaid"
