@@ -1,10 +1,16 @@
 # CLAUDE.md - Reference for AI Coding Assistants
 
-## Build Commands
+## Android Studio Commands
 - Setup: Open project in Android Studio
-- Build: Use Android Studio to build the project
-- Run: Use Android Studio to run on an emulator or device
-- Generate APK: In Android Studio, Build > Build Bundle(s)/APK(s) > Build APK(s)
+- Sync Gradle: Click "Sync Now" when prompted, or go to File > Sync Project with Gradle Files
+- Build: Click Build > Make Project (Ctrl+F9 / Cmd+F9)
+- Run: Click Run > Run 'app' (Shift+F10 / Ctrl+R)
+- Clean: Click Build > Clean Project
+- Rebuild: Click Build > Rebuild Project
+- Debug: Click Run > Debug 'app' (Shift+F9 / Ctrl+D)
+- Generate Signed APK: Build > Generate Signed Bundle/APK > APK
+- Logcat: View > Tool Windows > Logcat (to view app logs)
+- Layout Inspector: Tools > Layout Inspector (to debug UI issues)
 
 ## Code Style Guidelines
 - Formatting: Use Android Studio's default formatting
