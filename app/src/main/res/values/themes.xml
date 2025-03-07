@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.GrannyAid" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="colorPrimary">#3F51B5</item>
+        <item name="colorPrimaryDark">#303F9F</item>
+        <item name="colorAccent">#4CAF50</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+</resources>

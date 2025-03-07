@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#F5F5F5"
+    tools:context=".SettingsActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Settings"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:textColor="#3F51B5"
+        android:gravity="center"
+        android:layout_marginBottom="24dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Airplane Mode -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Airplane Mode"
+                android:textSize="24sp"
+                android:textColor="#000000"
+                android:layout_marginTop="16dp" />
+
+            <Switch
+                android:id="@+id/airplaneModeSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="OFF"
+                android:textSize="20sp"
+                android:padding="8dp"
+                android:layout_marginTop="8dp" />
+
+            <!-- Bluetooth -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Bluetooth"
+                android:textSize="24sp"
+                android:textColor="#000000"
+                android:layout_marginTop="16dp" />
+
+            <Switch
+                android:id="@+id/bluetoothSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ON"
+                android:textSize="20sp"
+                android:padding="8dp"
+                android:layout_marginTop="8dp" />
+
+            <!-- Wi-Fi -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Wi-Fi"
+                android:textSize="24sp"
+                android:textColor="#000000"
+                android:layout_marginTop="16dp" />
+
+            <Switch
+                android:id="@+id/wifiSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ON"
+                android:textSize="20sp"
+                android:padding="8dp"
+                android:layout_marginTop="8dp" />
+
+            <!-- Mobile Network -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Mobile Network"
+                android:textSize="24sp"
+                android:textColor="#000000"
+                android:layout_marginTop="16dp" />
+
+            <Switch
+                android:id="@+id/mobileNetworkSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ON"
+                android:textSize="20sp"
+                android:padding="8dp"
+                android:layout_marginTop="8dp" />
+
+            <!-- Sound Volume -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sound Volume"
+                android:textSize="24sp"
+                android:textColor="#000000"
+                android:layout_marginTop="16dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="8dp">
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@android:drawable/ic_lock_silent_mode_off"
+                    android:contentDescription="Sound icon" />
+
+                <SeekBar
+                    android:id="@+id/soundVolumeSeekBar"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:max="100"
+                    android:progress="70" />
+
+                <TextView
+                    android:id="@+id/soundVolumeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="70%"
+                    android:textSize="20sp"
+                    android:textColor="#000000"
+                    android:layout_marginStart="8dp" />
+            </LinearLayout>
+
+            <!-- Earpiece Volume -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Earpiece Volume"
+                android:textSize="24sp"
+                android:textColor="#000000"
+                android:layout_marginTop="16dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="8dp">
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@android:drawable/ic_lock_silent_mode_off"
+                    android:contentDescription="Earpiece icon" />
+
+                <SeekBar
+                    android:id="@+id/earpieceVolumeSeekBar"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:max="100"
+                    android:progress="70" />
+
+                <TextView
+                    android:id="@+id/earpieceVolumeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="70%"
+                    android:textSize="20sp"
+                    android:textColor="#000000"
+                    android:layout_marginStart="8dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/saveSettingsButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="SAVE SETTINGS"
+        android:textSize="24sp"
+        android:backgroundTint="#4CAF50"
+        android:padding="16dp"
+        android:layout_marginTop="16dp" />
+
+</LinearLayout>
