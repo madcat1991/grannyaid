@@ -8,6 +8,7 @@
 - Clean: Click Build > Clean Project
 - Rebuild: Click Build > Rebuild Project
 - Debug: Click Run > Debug 'app' (Shift+F9 / Ctrl+D)
+- Device Manager: Tools > Device Manager (for emulator creation in Android Studio 2024.3.1+)
 - Generate Signed APK: Build > Generate Signed Bundle/APK > APK
 - Logcat: View > Tool Windows > Logcat (to view app logs)
 - Layout Inspector: Tools > Layout Inspector (to debug UI issues)

@@ -60,12 +60,16 @@ Some settings (like Mobile Network) may require specific permissions or system-l
      - Enable USB debugging in Developer Options
      - Connect your device via USB
      - Allow USB debugging when prompted on your device
-   - **Emulator**:
-     - Go to Tools > AVD Manager
-     - Click "Create Virtual Device"
+   - **Emulator (Android Studio Meerkat 2024.3.1+)**:
+     - Go to Tools > Device Manager (replaces the old AVD Manager)
+     - In the Device Manager window, click "Create device" 
      - Select a device definition (e.g., Pixel 4)
      - Select a system image with API level 24 or higher
      - Complete the configuration and click "Finish"
+   - **Emulator (Older Android Studio versions)**:
+     - Go to Tools > AVD Manager
+     - Click "Create Virtual Device"
+     - Follow the same steps as above
 
 5. **Build and run the app**:
    - Click the green "Run" button in the toolbar
