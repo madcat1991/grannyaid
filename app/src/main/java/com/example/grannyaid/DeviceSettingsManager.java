@@ -160,28 +160,53 @@ public class DeviceSettingsManager {
      * Helper method to open the airplane mode settings
      */
     private void openAirplaneModeSettings() {
-        try {
-            // There's no direct ACTION constant for Airplane Mode in Settings
-            // So we use different intents based on Android version
-            Intent intent;
-            
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) { // Android 14 (API 34)
-                // For Android 14+, airplane mode is in "More connectivity options" rather than mobile network
-                intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS); // This should open the network & internet settings
-                // Update the guidance dialog to show Android 14 specific instructions
+        // There's no direct ACTION constant for Airplane Mode in Settings
+        // So we use different intents based on Android version
+        Intent intent;
+        
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) { // Android 14 (API 34)
+            try {
+                // For Android 14+, airplane mode is in "More connectivity options"
+                intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS); // Opens Network & Internet
+                
+                // Show only ONE dialog with Android 14 specific instructions
                 new AlertDialog.Builder(context)
                         .setTitle(R.string.airplane_guide_title)
                         .setMessage(R.string.airplane_guide_android14)
                         .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                            // Launch the intent only after showing instructions
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            context.startActivity(intent);
+                            try {
+                                // Launch the intent only after showing instructions
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                context.startActivity(intent);
+                                Log.i(TAG, "Opened Android 14 settings for airplane mode adjustment");
+                            } catch (Exception e) {
+                                // If primary intent fails, try the fallback within the same dialog's callback
+                                Log.e(TAG, "Primary settings intent failed, trying fallback: " + e.getMessage());
+                                try {
+                                    Intent fallbackIntent = new Intent(Settings.ACTION_SETTINGS);
+                                    fallbackIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    context.startActivity(fallbackIntent);
+                                    Log.i(TAG, "Opened fallback settings for Android 14");
+                                } catch (Exception e2) {
+                                    Log.e(TAG, "Both primary and fallback intents failed: " + e2.getMessage());
+                                    // Don't show another dialog, just log the error
+                                }
+                            }
                         })
                         .show();
                 
-                Log.i(TAG, "Showing Android 14 specific airplane mode guidance for 'More connectivity options'");
+                Log.i(TAG, "Showing Android 14 specific airplane mode guidance");
                 return;
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            } catch (Exception e) {
+                // If dialog creation fails, log but don't show another dialog
+                Log.e(TAG, "Failed to show Android 14 guidance dialog: " + e.getMessage());
+                // Fall through to default behavior
+            }
+        }
+        
+        // For Android 10-13 and fallback for Android 14 if specific handling failed
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 // For Android 10-13, use network settings which contains airplane mode
                 intent = new Intent(Settings.ACTION_NETWORK_OPERATOR_SETTINGS);
             } else {
