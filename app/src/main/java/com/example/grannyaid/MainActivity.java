@@ -182,6 +182,12 @@ public class MainActivity extends AppCompatActivity {
     private boolean needToFixWifi = false;
     private boolean needToFixMobileNetwork = false;
     
+    // Tracks which settings we attempted to fix
+    private boolean attemptedToFixAirplaneMode = false;
+    private boolean attemptedToFixBluetooth = false;
+    private boolean attemptedToFixWifi = false;
+    private boolean attemptedToFixMobileNetwork = false;
+    
     // Tracks which settings have been successful
     private boolean soundSuccess = false;
     private boolean earpieceSuccess = false;
@@ -221,8 +227,13 @@ public class MainActivity extends AppCompatActivity {
                 deviceSettingsManager.setSkipMobileDataCheck(true);
                 // Don't try to fix mobile network if airplane mode is enabled or needs to be enabled
                 needToFixMobileNetwork = false;
-                mobileNetworkSuccess = true; // Mark as success to avoid error messages
-                Log.d("MainActivity", "Skipping mobile data check because of airplane mode");
+                
+                // We should not consider mobile network as success if we're skipping it
+                // Only mark as success if airplane mode is actually enabled AND we want mobile data disabled
+                boolean wantMobileData = settingsManager.getMobileNetwork();
+                mobileNetworkSuccess = !wantMobileData; // Only success if we want it disabled anyway
+                
+                Log.d("MainActivity", "Skipping mobile data check because of airplane mode. Mobile data success=" + mobileNetworkSuccess);
             } else {
                 deviceSettingsManager.setSkipMobileDataCheck(false);
                 
@@ -285,6 +296,12 @@ public class MainActivity extends AppCompatActivity {
         needToFixBluetooth = false;
         needToFixWifi = false;
         needToFixMobileNetwork = false;
+        
+        // Reset attempted fix flags
+        attemptedToFixAirplaneMode = false;
+        attemptedToFixBluetooth = false;
+        attemptedToFixWifi = false;
+        attemptedToFixMobileNetwork = false;
     }
     
     private void processNextSetting() {
@@ -292,18 +309,22 @@ public class MainActivity extends AppCompatActivity {
         // Priority order: 1. Airplane Mode 2. Mobile Network 3. WiFi 4. Bluetooth
         if (needToFixAirplaneMode) {
             needToFixAirplaneMode = false;
+            attemptedToFixAirplaneMode = true;
             // Show airplane mode dialog only when current state doesn't match desired state
             airplaneModeSuccess = deviceSettingsManager.setAirplaneMode(settingsManager.getAirplaneMode());
         } else if (needToFixMobileNetwork) {
             needToFixMobileNetwork = false;
+            attemptedToFixMobileNetwork = true;
             // Show mobile network dialog only when current state doesn't match desired state
             mobileNetworkSuccess = deviceSettingsManager.setMobileNetwork(settingsManager.getMobileNetwork());
         } else if (needToFixWifi) {
             needToFixWifi = false;
+            attemptedToFixWifi = true;
             // Show WiFi dialog only when current state doesn't match desired state
             wifiSuccess = deviceSettingsManager.setWifi(settingsManager.getWifi());
         } else if (needToFixBluetooth) {
             needToFixBluetooth = false;
+            attemptedToFixBluetooth = true;
             // Process Bluetooth fix if needed and permissions allow
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 if (checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) == 
@@ -349,13 +370,32 @@ public class MainActivity extends AppCompatActivity {
                 ", SoundVolume=" + soundSuccess +
                 ", EarpieceVolume=" + earpieceSuccess);
         
-        // Define what counts as success (audio settings should always work)
-        boolean success = soundSuccess && earpieceSuccess;
+        // A stricter definition of success - all attempted settings must succeed
+        boolean allRequiredSettingsFixed = true;
+        
+        // Check each setting that was attempted
+        if (!soundSuccess) allRequiredSettingsFixed = false;
+        if (!earpieceSuccess) allRequiredSettingsFixed = false;
+        
+        // Only count these if we attempted to fix them
+        if (attemptedToFixAirplaneMode && !airplaneModeSuccess) allRequiredSettingsFixed = false;
+        if (attemptedToFixWifi && !wifiSuccess) allRequiredSettingsFixed = false;
+        if (attemptedToFixMobileNetwork && !mobileNetworkSuccess) allRequiredSettingsFixed = false;
+        if (attemptedToFixBluetooth && !bluetoothSuccess) allRequiredSettingsFixed = false;
+        
+        // Add debug logging
+        Log.d("MainActivity", "Fix success check: all=" + allRequiredSettingsFixed + 
+                ", attempted airplane=" + attemptedToFixAirplaneMode + 
+                ", attempted wifi=" + attemptedToFixWifi + 
+                ", attempted mobile=" + attemptedToFixMobileNetwork + 
+                ", attempted bluetooth=" + attemptedToFixBluetooth);
+        
+        // Check if at least one setting was successfully fixed
         boolean anySuccess = soundSuccess || earpieceSuccess || wifiSuccess || 
                              bluetoothSuccess || airplaneModeSuccess || mobileNetworkSuccess;
         
         // Show appropriate success message
-        if (success) {
+        if (allRequiredSettingsFixed) {
             Toast.makeText(this, getString(R.string.settings_fixed), Toast.LENGTH_LONG).show();
             showSuccessAnimation();
         } else if (anySuccess) {
