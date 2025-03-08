@@ -166,8 +166,8 @@ public class DeviceSettingsManager {
             Intent intent;
             
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) { // Android 14 (API 34)
-                // For Android 14+, use mobile network settings which now contains airplane mode
-                intent = new Intent(Settings.ACTION_NETWORK_OPERATOR_SETTINGS);
+                // For Android 14+, airplane mode is in "More connectivity options" rather than mobile network
+                intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS); // This should open the network & internet settings
                 // Update the guidance dialog to show Android 14 specific instructions
                 new AlertDialog.Builder(context)
                         .setTitle(R.string.airplane_guide_title)
@@ -179,7 +179,7 @@ public class DeviceSettingsManager {
                         })
                         .show();
                 
-                Log.i(TAG, "Showing Android 14 specific airplane mode guidance");
+                Log.i(TAG, "Showing Android 14 specific airplane mode guidance for 'More connectivity options'");
                 return;
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 // For Android 10-13, use network settings which contains airplane mode
