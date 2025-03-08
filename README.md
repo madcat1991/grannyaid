@@ -36,60 +36,25 @@ Some settings (like Mobile Network) may require specific permissions or system-l
 
 ## Building the App
 
-### Detailed steps to build the app in Android Studio:
+1. **Prerequisites**:
+   - Android Studio (Meerkat 2024.3.1+ recommended)
+   - Java 11 or higher
+   - Android SDK Platform 24 (Android 7.0) or higher
 
-1. **Clone this repository**:
+2. **Clone and open**:
    ```
    git clone https://github.com/yourusername/grannyaid.git
    ```
+   Open in Android Studio: File > Open > select the project folder
 
-2. **Open the project in Android Studio**:
-   - Launch Android Studio
-   - Select "Open an existing Android Studio project"
-   - Navigate to the cloned repository folder and click "OK"
-   - Wait for Gradle sync to complete
+3. **Build and run**:
+   - Connect an Android device or set up an emulator (Tools > Device Manager)
+   - Click the green "Run" button (or Shift+F10 / Ctrl+R)
 
-3. **Ensure you have the required SDK**:
-   - Android Studio may prompt you to download required SDK components
-   - Go to Tools > SDK Manager to verify you have Android SDK Platform 24 (Android 7.0) or higher
-   - Install any missing components as prompted
-
-4. **Configure a device or emulator**:
-   - **Physical device**:
-     - Enable Developer Options on your Android device (tap Build Number 7 times in Settings > About phone)
-     - Enable USB debugging in Developer Options
-     - Connect your device via USB
-     - Allow USB debugging when prompted on your device
-   - **Emulator (Android Studio Meerkat 2024.3.1+)**:
-     - Go to Tools > Device Manager (replaces the old AVD Manager)
-     - In the Device Manager window, click "Create device" 
-     - Select a device definition (e.g., Pixel 4)
-     - Select a system image with API level 24 or higher
-     - Complete the configuration and click "Finish"
-   - **Emulator (Older Android Studio versions)**:
-     - Go to Tools > AVD Manager
-     - Click "Create Virtual Device"
-     - Follow the same steps as above
-
-5. **Build and run the app**:
-   - Click the green "Run" button in the toolbar
-   - Select your target device from the list
-   - Wait for the app to build and install
-   - The app should launch automatically on your device/emulator
-
-6. **Generate a release APK** (for distribution):
-   - Go to Build > Generate Signed Bundle/APK
-   - Select "APK" and click "Next"
-   - Create or select a keystore for signing your app
-   - Fill in the required information and click "Next"
-   - Select release build type
-   - Select destination folder and click "Finish"
-   - The APK will be saved to the specified location
-
-7. **Install the released APK** on your grandmother's device:
-   - Enable "Install from unknown sources" in the device settings
-   - Transfer the APK to the device via email, cloud storage, or USB
-   - Browse to the APK on the device and tap to install
+4. **Generate APK for distribution**:
+   - Build > Generate Signed Bundle/APK > APK
+   - Follow the signing process to create the release APK
+   - Install on the target device by enabling "Install from unknown sources"
 
 ## Important Permissions
 
@@ -99,53 +64,28 @@ The app requires special permissions to modify system settings. When prompted, p
 
 ### Common Build Issues
 
-1. **Gradle sync failed**:
-   - Check your internet connection
+1. **Gradle/Java compatibility issues**:
+   - Java 11+ required (check with `java -version`)
+   - For Java 11: Gradle 8.0+ recommended
+   - Fix: In gradle.properties, add `org.gradle.java.installations.auto-download=true`
+
+2. **Sync or build failures**:
    - Try File > Invalidate Caches / Restart
-   - Make sure your Android Studio is up to date
-   - Update Gradle plugin if prompted
+   - Build > Clean Project, then Build > Rebuild Project
+   - Check SDK Manager for missing components
 
-2. **Missing SDK components**:
-   - Go to Tools > SDK Manager and install any missing components
-   - Accept licenses if prompted during installation
-
-3. **Build errors related to resources**:
-   - Make sure all resource files are properly formatted XML
-   - Check that all referenced resources exist
-   - Try Build > Clean Project followed by Build > Rebuild Project
-
-4. **Gradle and Java compatibility issues**:
-   - If you see "Cannot use @TaskAction annotation" or "incompatible Java/Gradle version" errors:
-   - Check your Java version with `java -version` in terminal
-   - For Java 21: Use Gradle 8.10+ and Android Gradle Plugin 8.2.0+
-   - For Java 17: Use Gradle 8.0+ and Android Gradle Plugin 8.0.0+
-   - For Java 11: Use Gradle 7.5+ and Android Gradle Plugin 7.4.0+
-   - Update build.gradle files to use the appropriate syntax for your Gradle version
-   - Try Build > Clean Project followed by Build > Rebuild Project
-
-5. **AndroidX dependency issues**:
-   - If you see "Configuration contains AndroidX dependencies, but android.useAndroidX is not enabled":
-   - Create or edit gradle.properties file in the project root
-   - Add the line: `android.useAndroidX=true`
-   - Also consider adding: `android.enableJetifier=true` to auto-convert third-party libraries
-   - Sync the project again
+3. **AndroidX issues**:
+   - Ensure `android.useAndroidX=true` is in gradle.properties
 
 ### Runtime Issues
 
-1. **Settings don't change when "Fix It" is pressed**:
-   - Check if you granted all required permissions
-   - Some settings (especially mobile data) may require system app privileges
-   - On newer Android versions, certain settings may be protected and cannot be changed programmatically
+1. **Settings not changing**:
+   - Grant all required permissions in Settings > Apps > GrannyAid > Permissions
+   - Some settings require system privileges or aren't changeable on newer Android versions
 
-2. **App crashes on startup**:
-   - Check logcat in Android Studio for detailed error messages
-   - Ensure your device is running Android 7.0 or higher
-   - Make sure all resources are properly defined
+2. **App crashes**:
+   - Verify Android 7.0+ (Nougat) 
+   - Check logcat for detailed errors
 
-3. **Permission dialog doesn't appear**:
-   - On some devices, you may need to manually grant permissions in Settings > Apps > GrannyAid > Permissions
-   - Try reinstalling the app
-
-### Device-Specific Issues
-
-Some features may work differently on various manufacturers' devices due to custom Android implementations. Samsung, Xiaomi, and other manufacturers often modify Android settings access.
+3. **Device-specific limitations**:
+   - Samsung, Xiaomi, and other manufacturers may have custom restrictions on settings access

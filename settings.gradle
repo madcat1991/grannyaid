@@ -6,6 +6,11 @@ pluginManagement {
     }
 }
 
+// Apply the Foojay Toolchains Plugin
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version("0.7.0")
+}
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -15,14 +20,12 @@ dependencyResolutionManagement {
 }
 
 // Workaround for JDK image transform issue
-gradle.projectsLoaded {
-    allprojects {
-        plugins.withId('com.android.application') {
-            android.compileOptions {
-                // Force Java 11 compatibility
-                sourceCompatibility = JavaVersion.VERSION_11
-                targetCompatibility = JavaVersion.VERSION_11
-            }
+gradle.beforeProject { project ->
+    project.plugins.withId('com.android.application') {
+        project.android.compileOptions {
+            // Force Java 11 compatibility
+            sourceCompatibility = JavaVersion.VERSION_11
+            targetCompatibility = JavaVersion.VERSION_11
         }
     }
 }
