@@ -219,20 +219,24 @@ public class MainActivity extends AppCompatActivity {
             // because mobile data can't be enabled in airplane mode
             if (currentAirplaneMode || wantAirplaneMode) {
                 deviceSettingsManager.setSkipMobileDataCheck(true);
+                // Don't try to fix mobile network if airplane mode is enabled or needs to be enabled
+                needToFixMobileNetwork = false;
+                mobileNetworkSuccess = true; // Mark as success to avoid error messages
                 Log.d("MainActivity", "Skipping mobile data check because of airplane mode");
             } else {
                 deviceSettingsManager.setSkipMobileDataCheck(false);
+                
+                // Only check and potentially fix mobile network if airplane mode is not involved
+                boolean wantMobileData = settingsManager.getMobileNetwork();
+                boolean currentMobileData = deviceSettingsManager.isMobileDataEnabled();
+                needToFixMobileNetwork = (wantMobileData != currentMobileData);
+                Log.d("MainActivity", "Mobile data: current=" + currentMobileData + ", desired=" + wantMobileData + ", need fix=" + needToFixMobileNetwork);
             }
             
             boolean wantWifi = settingsManager.getWifi();
             boolean currentWifi = deviceSettingsManager.isWifiEnabled();
             needToFixWifi = (wantWifi != currentWifi);
             Log.d("MainActivity", "WiFi: current=" + currentWifi + ", desired=" + wantWifi + ", need fix=" + needToFixWifi);
-            
-            boolean wantMobileData = settingsManager.getMobileNetwork();
-            boolean currentMobileData = deviceSettingsManager.isMobileDataEnabled();
-            needToFixMobileNetwork = (wantMobileData != currentMobileData);
-            Log.d("MainActivity", "Mobile data: current=" + currentMobileData + ", desired=" + wantMobileData + ", need fix=" + needToFixMobileNetwork);
             
             // Only apply Bluetooth changes if needed
             boolean wantBluetooth = settingsManager.getBluetooth();
