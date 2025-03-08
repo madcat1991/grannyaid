@@ -237,25 +237,15 @@ public class MainActivity extends AppCompatActivity {
             // Only apply Bluetooth changes if needed
             boolean wantBluetooth = settingsManager.getBluetooth();
             boolean currentBluetooth = deviceSettingsManager.isBluetoothEnabled();
-            boolean needToFixBluetooth = (wantBluetooth != currentBluetooth);
+            needToFixBluetooth = (wantBluetooth != currentBluetooth);
             Log.d("MainActivity", "Bluetooth: current=" + currentBluetooth + ", desired=" + wantBluetooth + ", need fix=" + needToFixBluetooth);
             
-            if (needToFixBluetooth) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    if (checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) == 
-                            android.content.pm.PackageManager.PERMISSION_GRANTED) {
-                        // Bluetooth can be controlled directly without dialogs
-                        bluetoothSuccess = deviceSettingsManager.setBluetooth(wantBluetooth);
-                    }
-                } else {
-                    // For older Android versions, direct control works
-                    bluetoothSuccess = deviceSettingsManager.setBluetooth(wantBluetooth);
-                }
-            } else {
+            if (!needToFixBluetooth) {
                 // Already in correct state
                 bluetoothSuccess = true;
                 Log.d("MainActivity", "Bluetooth already in desired state, skipping");
             }
+            // If it needs fixing, it will be handled in processNextSetting()
             
             // Check if all settings are already in desired state
             if (!needToFixAirplaneMode && !needToFixWifi && !needToFixMobileNetwork && 
@@ -295,18 +285,32 @@ public class MainActivity extends AppCompatActivity {
     
     private void processNextSetting() {
         // Process each setting one at a time, but only if needed
+        // Priority order: 1. Airplane Mode 2. Mobile Network 3. WiFi 4. Bluetooth
         if (needToFixAirplaneMode) {
             needToFixAirplaneMode = false;
             // Show airplane mode dialog only when current state doesn't match desired state
             airplaneModeSuccess = deviceSettingsManager.setAirplaneMode(settingsManager.getAirplaneMode());
-        } else if (needToFixWifi) {
-            needToFixWifi = false;
-            // Show WiFi dialog only when current state doesn't match desired state
-            wifiSuccess = deviceSettingsManager.setWifi(settingsManager.getWifi());
         } else if (needToFixMobileNetwork) {
             needToFixMobileNetwork = false;
             // Show mobile network dialog only when current state doesn't match desired state
             mobileNetworkSuccess = deviceSettingsManager.setMobileNetwork(settingsManager.getMobileNetwork());
+        } else if (needToFixWifi) {
+            needToFixWifi = false;
+            // Show WiFi dialog only when current state doesn't match desired state
+            wifiSuccess = deviceSettingsManager.setWifi(settingsManager.getWifi());
+        } else if (needToFixBluetooth) {
+            needToFixBluetooth = false;
+            // Process Bluetooth fix if needed and permissions allow
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) == 
+                        android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                    bluetoothSuccess = deviceSettingsManager.setBluetooth(settingsManager.getBluetooth());
+                }
+            } else {
+                // For older Android versions, direct control works
+                bluetoothSuccess = deviceSettingsManager.setBluetooth(settingsManager.getBluetooth());
+            }
+            processNextSetting(); // Continue to next setting immediately since this doesn't show dialog
         } else {
             // All settings processed, show final status
             finishSettingsProcess();
