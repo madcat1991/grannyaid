@@ -116,7 +116,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
     
     private void updateSwitchText(Switch switchView, boolean isChecked) {
-        switchView.setText(isChecked ? "ON" : "OFF");
+        switchView.setText(isChecked ? getString(R.string.switch_on) : getString(R.string.switch_off));
     }
     
     private void saveSettings() {
