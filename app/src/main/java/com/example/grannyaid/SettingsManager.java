@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 public class SettingsManager {
     private static final String PREFS_NAME = "GrannyAidPrefs";
+    private static final String KEY_AIRPLANE_MODE = "airplane_mode";
     private static final String KEY_BLUETOOTH = "bluetooth";
     private static final String KEY_WIFI = "wifi";
     private static final String KEY_MOBILE_NETWORK = "mobile_network";
@@ -17,9 +18,10 @@ public class SettingsManager {
         preferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
 
-    public void saveSettings(boolean bluetooth, boolean wifi,
+    public void saveSettings(boolean airplaneMode, boolean bluetooth, boolean wifi,
                              boolean mobileNetwork, int soundVolume, int earpieceVolume) {
         SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(KEY_AIRPLANE_MODE, airplaneMode);
         editor.putBoolean(KEY_BLUETOOTH, bluetooth);
         editor.putBoolean(KEY_WIFI, wifi);
         editor.putBoolean(KEY_MOBILE_NETWORK, mobileNetwork);
@@ -28,6 +30,9 @@ public class SettingsManager {
         editor.apply();
     }
 
+    public boolean getAirplaneMode() {
+        return preferences.getBoolean(KEY_AIRPLANE_MODE, false);
+    }
 
     public boolean getBluetooth() {
         return preferences.getBoolean(KEY_BLUETOOTH, true);

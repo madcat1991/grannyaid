@@ -27,6 +27,175 @@ public class DeviceSettingsManager {
         this.wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
     }
     
+    /**
+     * Check if airplane mode is currently enabled
+     */
+    public boolean isAirplaneModeEnabled() {
+        try {
+            return Settings.Global.getInt(context.getContentResolver(), 
+                    Settings.Global.AIRPLANE_MODE_ON, 0) == 1;
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to check airplane mode state: " + e.getMessage(), e);
+            return false;
+        }
+    }
+    
+    /**
+     * Check if WiFi is currently enabled
+     */
+    public boolean isWifiEnabled() {
+        try {
+            return wifiManager.isWifiEnabled();
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to check WiFi state: " + e.getMessage(), e);
+            return false;
+        }
+    }
+    
+    /**
+     * Check if Bluetooth is currently enabled
+     */
+    public boolean isBluetoothEnabled() {
+        try {
+            BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            if (bluetoothAdapter == null) {
+                Log.e(TAG, "Bluetooth not supported on this device");
+                return false;
+            }
+            return bluetoothAdapter.isEnabled();
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to check Bluetooth state: " + e.getMessage(), e);
+            return false;
+        }
+    }
+    
+    /**
+     * Check if mobile data is currently enabled (best effort)
+     * Since it's difficult to reliably check mobile data state on all Android versions,
+     * we allow bypassing mobile data dialog if asked to do so.
+     * This may not work on all devices due to API restrictions.
+     */
+    public boolean isMobileDataEnabled() {
+        try {
+            // Return true for desired setting to prevent dialogs
+            // in the case where the setting is already correct
+            if (context.getSharedPreferences("GrannyAidPrefs", Context.MODE_PRIVATE)
+                    .getBoolean("skip_mobile_data_check", false)) {
+                return true;
+            }
+            
+            // This approach isn't reliable on all devices, but it's a best effort
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // On Android 10+, use ConnectivityManager with NetworkCapabilities
+                android.net.ConnectivityManager cm = (android.net.ConnectivityManager)
+                        context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                android.net.Network network = cm.getActiveNetwork();
+                if (network == null) return false;
+                
+                android.net.NetworkCapabilities capabilities = cm.getNetworkCapabilities(network);
+                return capabilities != null && 
+                       capabilities.hasTransport(android.net.NetworkCapabilities.TRANSPORT_CELLULAR);
+            } else {
+                // For older versions, try to use reflection (may not work on all devices)
+                android.net.ConnectivityManager cm = (android.net.ConnectivityManager)
+                        context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                try {
+                    java.lang.reflect.Method method = cm.getClass().getMethod("getMobileDataEnabled");
+                    method.setAccessible(true);
+                    return (Boolean) method.invoke(cm);
+                } catch (Exception e) {
+                    Log.e(TAG, "Reflection failed for mobile data check: " + e.getMessage(), e);
+                    return false;
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to check mobile data state: " + e.getMessage(), e);
+            return false;
+        }
+    }
+    
+    /**
+     * Set a flag to bypass mobile data check on next call
+     * This is useful for airplane mode where mobile data cannot be enabled
+     */
+    public void setSkipMobileDataCheck(boolean skip) {
+        try {
+            context.getSharedPreferences("GrannyAidPrefs", Context.MODE_PRIVATE)
+                .edit()
+                .putBoolean("skip_mobile_data_check", skip)
+                .apply();
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to set skip mobile data flag: " + e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Opens airplane mode settings since direct control requires higher permissions on modern Android
+     * 
+     * @param enable The desired state (used for UI feedback only)
+     * @return Always returns false to indicate programmatic setting wasn't possible
+     */
+    public boolean setAirplaneMode(boolean enable) {
+        try {
+            // First show guidance dialog BEFORE opening settings
+            new AlertDialog.Builder(context)
+                    .setTitle(R.string.airplane_guide_title)
+                    .setMessage(context.getString(enable ? 
+                            R.string.airplane_guide_enable : 
+                            R.string.airplane_guide_disable))
+                    .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                        openAirplaneModeSettings();
+                    })
+                    .show();
+            
+            Log.i(TAG, "Showing airplane mode guidance dialog");
+            return false; // Return false because the setting wasn't automatically applied
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to show airplane mode dialog: " + e.getMessage(), e);
+            return false;
+        }
+    }
+    
+    /**
+     * Helper method to open the airplane mode settings
+     */
+    private void openAirplaneModeSettings() {
+        try {
+            // There's no direct ACTION constant for Airplane Mode in Settings
+            // So we use different intents based on Android version
+            Intent intent;
+            
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // For Android 10+, use network settings which contains airplane mode
+                intent = new Intent(Settings.ACTION_NETWORK_OPERATOR_SETTINGS);
+            } else {
+                // For older Android versions
+                intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+            }
+            
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+            
+            Log.i(TAG, "Opened settings for airplane mode adjustment");
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to open airplane mode settings: " + e.getMessage(), e);
+            // Try a fallback intent if the first one failed
+            try {
+                // Show the fallback guidance dialog
+                new AlertDialog.Builder(context)
+                        .setTitle(R.string.airplane_guide_title)
+                        .setMessage(R.string.airplane_guide_fallback)
+                        .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                            Intent fallbackIntent = new Intent(Settings.ACTION_SETTINGS);
+                            fallbackIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(fallbackIntent);
+                        })
+                        .show();
+            } catch (Exception e2) {
+                Log.e(TAG, "Fallback settings open also failed: " + e2.getMessage(), e2);
+            }
+        }
+    }
     
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public boolean setBluetooth(boolean enable) {

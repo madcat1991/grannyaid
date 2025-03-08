@@ -51,13 +51,6 @@ public class MainActivity extends AppCompatActivity {
         checkPermissions();
     }
     
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // Check permissions again on resume, in case user granted them in settings
-        updateButtonState();
-    }
-    
     private boolean hasRequiredPermissions() {
         boolean hasWriteSettings = true;
         boolean hasBluetoothPermissions = true;
@@ -183,61 +176,200 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     
+    // Tracks which settings need to be fixed
+    private boolean needToFixAirplaneMode = false;
+    private boolean needToFixBluetooth = false;
+    private boolean needToFixWifi = false;
+    private boolean needToFixMobileNetwork = false;
+    
+    // Tracks which settings have been successful
+    private boolean soundSuccess = false;
+    private boolean earpieceSuccess = false;
+    private boolean airplaneModeSuccess = false;
+    private boolean bluetoothSuccess = false;
+    private boolean wifiSuccess = false;
+    private boolean mobileNetworkSuccess = false;
+    
     private void fixSettings() {
         try {
+            // Start the fixing process
+            isFixingSettings = true;
+            
             Log.d("MainActivity", "Attempting to fix settings with values: " +
-                    "Bluetooth=" + settingsManager.getBluetooth() +
+                    "Airplane Mode=" + settingsManager.getAirplaneMode() +
+                    ", Bluetooth=" + settingsManager.getBluetooth() +
                     ", Wifi=" + settingsManager.getWifi() + 
                     ", SoundVolume=" + settingsManager.getSoundVolume() +
                     ", EarpieceVolume=" + settingsManager.getEarpieceVolume());
             
-            // Set audio settings - these are most likely to work
-            boolean soundSuccess = deviceSettingsManager.setSoundVolume(settingsManager.getSoundVolume());
-            boolean earpieceSuccess = deviceSettingsManager.setEarpieceVolume(settingsManager.getEarpieceVolume());
+            // Reset all status flags
+            resetSettingsStatus();
             
-            // Set WiFi
-            boolean wifiSuccess = deviceSettingsManager.setWifi(settingsManager.getWifi());
+            // First, set audio settings - these are most likely to work and don't require dialogs
+            soundSuccess = deviceSettingsManager.setSoundVolume(settingsManager.getSoundVolume());
+            earpieceSuccess = deviceSettingsManager.setEarpieceVolume(settingsManager.getEarpieceVolume());
             
-            // Only try Bluetooth if we have the permission
-            boolean bluetoothSuccess = false;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                if (checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) == 
-                        android.content.pm.PackageManager.PERMISSION_GRANTED) {
-                    bluetoothSuccess = deviceSettingsManager.setBluetooth(settingsManager.getBluetooth());
+            // Determine which settings need to be fixed through dialogs only if they don't match desired state
+            boolean wantAirplaneMode = settingsManager.getAirplaneMode();
+            boolean currentAirplaneMode = deviceSettingsManager.isAirplaneModeEnabled();
+            needToFixAirplaneMode = (wantAirplaneMode != currentAirplaneMode);
+            Log.d("MainActivity", "Airplane mode: current=" + currentAirplaneMode + ", desired=" + wantAirplaneMode + ", need fix=" + needToFixAirplaneMode);
+            
+            // If airplane mode is enabled (or will be enabled), we should skip mobile data checks
+            // because mobile data can't be enabled in airplane mode
+            if (currentAirplaneMode || wantAirplaneMode) {
+                deviceSettingsManager.setSkipMobileDataCheck(true);
+                Log.d("MainActivity", "Skipping mobile data check because of airplane mode");
+            } else {
+                deviceSettingsManager.setSkipMobileDataCheck(false);
+            }
+            
+            boolean wantWifi = settingsManager.getWifi();
+            boolean currentWifi = deviceSettingsManager.isWifiEnabled();
+            needToFixWifi = (wantWifi != currentWifi);
+            Log.d("MainActivity", "WiFi: current=" + currentWifi + ", desired=" + wantWifi + ", need fix=" + needToFixWifi);
+            
+            boolean wantMobileData = settingsManager.getMobileNetwork();
+            boolean currentMobileData = deviceSettingsManager.isMobileDataEnabled();
+            needToFixMobileNetwork = (wantMobileData != currentMobileData);
+            Log.d("MainActivity", "Mobile data: current=" + currentMobileData + ", desired=" + wantMobileData + ", need fix=" + needToFixMobileNetwork);
+            
+            // Only apply Bluetooth changes if needed
+            boolean wantBluetooth = settingsManager.getBluetooth();
+            boolean currentBluetooth = deviceSettingsManager.isBluetoothEnabled();
+            boolean needToFixBluetooth = (wantBluetooth != currentBluetooth);
+            Log.d("MainActivity", "Bluetooth: current=" + currentBluetooth + ", desired=" + wantBluetooth + ", need fix=" + needToFixBluetooth);
+            
+            if (needToFixBluetooth) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    if (checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) == 
+                            android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                        // Bluetooth can be controlled directly without dialogs
+                        bluetoothSuccess = deviceSettingsManager.setBluetooth(wantBluetooth);
+                    }
+                } else {
+                    // For older Android versions, direct control works
+                    bluetoothSuccess = deviceSettingsManager.setBluetooth(wantBluetooth);
                 }
             } else {
-                // For older Android versions
-                bluetoothSuccess = deviceSettingsManager.setBluetooth(settingsManager.getBluetooth());
+                // Already in correct state
+                bluetoothSuccess = true;
+                Log.d("MainActivity", "Bluetooth already in desired state, skipping");
             }
             
-            Log.d("MainActivity", "Settings applied: " +
-                    "Bluetooth=" + bluetoothSuccess +
-                    ", Wifi=" + wifiSuccess + 
-                    ", SoundVolume=" + soundSuccess +
-                    ", EarpieceVolume=" + earpieceSuccess);
-            
-            // Define what counts as success (audio settings should always work)
-            boolean success = soundSuccess && earpieceSuccess;
-            boolean anySuccess = soundSuccess || earpieceSuccess || wifiSuccess || bluetoothSuccess;
-            
-            // Show appropriate success message
-            if (success) {
-                Toast.makeText(this, getString(R.string.settings_fixed), Toast.LENGTH_LONG).show();
+            // Check if all settings are already in desired state
+            if (!needToFixAirplaneMode && !needToFixWifi && !needToFixMobileNetwork && 
+                !needToFixBluetooth && soundSuccess && earpieceSuccess) {
+                // All settings are already as desired, show success and skip the process
+                Toast.makeText(this, getString(R.string.all_settings_already_correct), Toast.LENGTH_LONG).show();
                 showSuccessAnimation();
-            } else if (anySuccess) {
-                Toast.makeText(this, getString(R.string.settings_partially_fixed), Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(this, getString(R.string.settings_not_fixed), Toast.LENGTH_LONG).show();
+                isFixingSettings = false;
+                return;
             }
+            
+            // Start the sequential settings process
+            processNextSetting();
+            
         } catch (Exception e) {
+            isFixingSettings = false; // Reset flag on error
             Log.e("MainActivity", "Error fixing settings: " + e.getMessage(), e);
             Toast.makeText(this, getString(R.string.error_fixing_settings), Toast.LENGTH_LONG).show();
         }
     }
     
+    private void resetSettingsStatus() {
+        // Reset all success flags
+        soundSuccess = false;
+        earpieceSuccess = false;
+        airplaneModeSuccess = false;
+        bluetoothSuccess = false;
+        wifiSuccess = false;
+        mobileNetworkSuccess = false;
+        
+        // Reset which settings need fixing
+        needToFixAirplaneMode = false;
+        needToFixBluetooth = false;
+        needToFixWifi = false;
+        needToFixMobileNetwork = false;
+    }
+    
+    private void processNextSetting() {
+        // Process each setting one at a time, but only if needed
+        if (needToFixAirplaneMode) {
+            needToFixAirplaneMode = false;
+            // Show airplane mode dialog only when current state doesn't match desired state
+            airplaneModeSuccess = deviceSettingsManager.setAirplaneMode(settingsManager.getAirplaneMode());
+        } else if (needToFixWifi) {
+            needToFixWifi = false;
+            // Show WiFi dialog only when current state doesn't match desired state
+            wifiSuccess = deviceSettingsManager.setWifi(settingsManager.getWifi());
+        } else if (needToFixMobileNetwork) {
+            needToFixMobileNetwork = false;
+            // Show mobile network dialog only when current state doesn't match desired state
+            mobileNetworkSuccess = deviceSettingsManager.setMobileNetwork(settingsManager.getMobileNetwork());
+        } else {
+            // All settings processed, show final status
+            finishSettingsProcess();
+        }
+    }
+    
+    // Flag to track if we're in the process of fixing settings
+    private boolean isFixingSettings = false;
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Check permissions again on resume, in case user granted them in settings
+        updateButtonState();
+        
+        // If we're in the process of fixing settings, continue to the next one
+        if (isFixingSettings) {
+            processNextSetting();
+        }
+    }
+    
+    private void finishSettingsProcess() {
+        // Reset the flag since we're done
+        isFixingSettings = false;
+        
+        // Log final results
+        Log.d("MainActivity", "Settings applied: " +
+                "Airplane Mode=" + airplaneModeSuccess +
+                ", Bluetooth=" + bluetoothSuccess +
+                ", Wifi=" + wifiSuccess + 
+                ", Mobile Data=" + mobileNetworkSuccess +
+                ", SoundVolume=" + soundSuccess +
+                ", EarpieceVolume=" + earpieceSuccess);
+        
+        // Define what counts as success (audio settings should always work)
+        boolean success = soundSuccess && earpieceSuccess;
+        boolean anySuccess = soundSuccess || earpieceSuccess || wifiSuccess || 
+                             bluetoothSuccess || airplaneModeSuccess || mobileNetworkSuccess;
+        
+        // Show appropriate success message
+        if (success) {
+            Toast.makeText(this, getString(R.string.settings_fixed), Toast.LENGTH_LONG).show();
+            showSuccessAnimation();
+        } else if (anySuccess) {
+            Toast.makeText(this, getString(R.string.settings_partially_fixed), Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, getString(R.string.settings_not_fixed), Toast.LENGTH_LONG).show();
+        }
+    }
+    
     private void showSuccessAnimation() {
         // This would be a good place to add a simple animation or a fullscreen success message
-        // For now, we'll just rely on the Toast message
+        // For now, we'll just rely on the Toast message, but we could add a simple visual feedback
+        fixButton.animate()
+            .scaleX(1.2f)
+            .scaleY(1.2f)
+            .setDuration(200)
+            .withEndAction(() -> {
+                fixButton.animate()
+                    .scaleX(1.0f)
+                    .scaleY(1.0f)
+                    .setDuration(200);
+            });
     }
     
     private void openSettings() {

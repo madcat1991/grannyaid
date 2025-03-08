@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class SettingsActivity extends AppCompatActivity {
     private SettingsManager settingsManager;
     
+    private Switch airplaneModeSwitch;
     private Switch bluetoothSwitch;
     private Switch wifiSwitch;
     private Switch mobileNetworkSwitch;
@@ -30,6 +31,7 @@ public class SettingsActivity extends AppCompatActivity {
         settingsManager = new SettingsManager(this);
         
         // Initialize UI components
+        airplaneModeSwitch = findViewById(R.id.airplaneModeSwitch);
         bluetoothSwitch = findViewById(R.id.bluetoothSwitch);
         wifiSwitch = findViewById(R.id.wifiSwitch);
         mobileNetworkSwitch = findViewById(R.id.mobileNetworkSwitch);
@@ -48,6 +50,7 @@ public class SettingsActivity extends AppCompatActivity {
     
     private void loadSavedSettings() {
         // Load settings from preferences
+        airplaneModeSwitch.setChecked(settingsManager.getAirplaneMode());
         bluetoothSwitch.setChecked(settingsManager.getBluetooth());
         wifiSwitch.setChecked(settingsManager.getWifi());
         mobileNetworkSwitch.setChecked(settingsManager.getMobileNetwork());
@@ -61,6 +64,7 @@ public class SettingsActivity extends AppCompatActivity {
         earpieceVolumeText.setText(earpieceVolume + "%");
         
         // Update switch text
+        updateSwitchText(airplaneModeSwitch, airplaneModeSwitch.isChecked());
         updateSwitchText(bluetoothSwitch, bluetoothSwitch.isChecked());
         updateSwitchText(wifiSwitch, wifiSwitch.isChecked());
         updateSwitchText(mobileNetworkSwitch, mobileNetworkSwitch.isChecked());
@@ -68,6 +72,9 @@ public class SettingsActivity extends AppCompatActivity {
     
     private void setupListeners() {
         // Switch change listeners
+        airplaneModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> 
+                updateSwitchText(airplaneModeSwitch, isChecked));
+                
         bluetoothSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> 
                 updateSwitchText(bluetoothSwitch, isChecked));
         
@@ -115,6 +122,7 @@ public class SettingsActivity extends AppCompatActivity {
     private void saveSettings() {
         // Save settings to preferences
         settingsManager.saveSettings(
+                airplaneModeSwitch.isChecked(),
                 bluetoothSwitch.isChecked(),
                 wifiSwitch.isChecked(),
                 mobileNetworkSwitch.isChecked(),
