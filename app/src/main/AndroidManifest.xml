@@ -13,7 +13,8 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher_simple"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="GrannyAid"
         android:supportsRtl="true"
         android:theme="@style/Theme.GrannyAid">
