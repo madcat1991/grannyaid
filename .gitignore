@@ -74,3 +74,6 @@ lint/tmp/
 
 # Gradle wrapper
 gradle/wrapper/gradle-wrapper.jar
+
+# macos
+.DS_Store
