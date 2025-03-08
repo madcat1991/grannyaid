@@ -167,7 +167,9 @@ public class DeviceSettingsManager {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) { // Android 14 (API 34)
             try {
                 // For Android 14+, airplane mode is in "More connectivity options"
-                intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS); // Opens Network & Internet
+                // Make the intent final so it can be used in the lambda
+                final Intent android14Intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS); // Opens Network & Internet
+                android14Intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 
                 // Show only ONE dialog with Android 14 specific instructions
                 new AlertDialog.Builder(context)
@@ -176,8 +178,7 @@ public class DeviceSettingsManager {
                         .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                             try {
                                 // Launch the intent only after showing instructions
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                context.startActivity(intent);
+                                context.startActivity(android14Intent);
                                 Log.i(TAG, "Opened Android 14 settings for airplane mode adjustment");
                             } catch (Exception e) {
                                 // If primary intent fails, try the fallback within the same dialog's callback
