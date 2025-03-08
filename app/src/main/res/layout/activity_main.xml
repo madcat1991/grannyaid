@@ -36,30 +36,27 @@
 
     <Button
         android:id="@+id/fixButton"
-        android:layout_width="280dp"
-        android:layout_height="280dp"
-        android:text="Fix It"
-        android:textSize="46sp"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:text="FIX IT"
+        android:textSize="36sp"
         android:textStyle="bold"
         android:backgroundTint="#4CAF50"
-        android:elevation="12dp"
-        app:cornerRadius="140dp"
+        android:elevation="8dp"
+        app:cornerRadius="125dp"
         android:layout_marginTop="64dp"
-        android:contentDescription="Press to fix settings"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/instructionTextView" />
 
     <Button
         android:id="@+id/settingsButton"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Settings"
-        android:textSize="30sp"
+        android:textSize="18sp"
         android:backgroundTint="#3F51B5"
         android:layout_marginBottom="24dp"
-        android:padding="20dp"
-        android:contentDescription="Go to settings"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />

@@ -11,7 +11,6 @@ import android.os.Build;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.widget.TextView;
 
 import androidx.annotation.RequiresPermission;
 
@@ -138,24 +137,16 @@ public class DeviceSettingsManager {
      */
     public boolean setAirplaneMode(boolean enable) {
         try {
-            // First show guidance dialog BEFORE opening settings with large text
-            AlertDialog dialog = new AlertDialog.Builder(context, R.style.LargeDialogTheme)
+            // First show guidance dialog BEFORE opening settings
+            new AlertDialog.Builder(context)
                     .setTitle(R.string.airplane_guide_title)
                     .setMessage(context.getString(enable ? 
                             R.string.airplane_guide_enable : 
                             R.string.airplane_guide_disable))
-                    .setPositiveButton(android.R.string.ok, (d, which) -> {
+                    .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                         openAirplaneModeSettings();
                     })
-                    .create();
-            
-            dialog.show();
-            
-            // Make the dialog message larger
-            TextView messageView = dialog.findViewById(android.R.id.message);
-            if (messageView != null) {
-                messageView.setTextSize(22);
-            }
+                    .show();
             
             Log.i(TAG, "Showing airplane mode guidance dialog");
             return false; // Return false because the setting wasn't automatically applied
@@ -191,23 +182,15 @@ public class DeviceSettingsManager {
             // Try a fallback intent if the first one failed
             try {
                 // Show the fallback guidance dialog
-                AlertDialog dialog = new AlertDialog.Builder(context, R.style.LargeDialogTheme)
+                new AlertDialog.Builder(context)
                         .setTitle(R.string.airplane_guide_title)
                         .setMessage(R.string.airplane_guide_fallback)
-                        .setPositiveButton(android.R.string.ok, (d, which) -> {
+                        .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                             Intent fallbackIntent = new Intent(Settings.ACTION_SETTINGS);
                             fallbackIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             context.startActivity(fallbackIntent);
                         })
-                        .create();
-                        
-                dialog.show();
-                
-                // Make the dialog message larger
-                TextView messageView = dialog.findViewById(android.R.id.message);
-                if (messageView != null) {
-                    messageView.setTextSize(22);
-                }
+                        .show();
             } catch (Exception e2) {
                 Log.e(TAG, "Fallback settings open also failed: " + e2.getMessage(), e2);
             }
@@ -239,27 +222,19 @@ public class DeviceSettingsManager {
             // On Android 10 (Q) and above, apps cannot enable/disable WiFi directly
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 // First show guidance dialog, BEFORE opening WiFi settings
-                AlertDialog dialog = new AlertDialog.Builder(context, R.style.LargeDialogTheme)
+                new AlertDialog.Builder(context)
                         .setTitle(R.string.wifi_guide_title)
                         .setMessage(context.getString(enable ? 
                                 R.string.wifi_guide_enable : 
                                 R.string.wifi_guide_disable))
-                        .setPositiveButton(android.R.string.ok, (d, which) -> {
+                        .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                             // Only open WiFi settings after user has read instructions
                             Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             context.startActivity(intent);
                             Log.i(TAG, "Opened WiFi settings for manual adjustment on Android 10+");
                         })
-                        .create();
-                        
-                dialog.show();
-                
-                // Make the dialog message larger
-                TextView messageView = dialog.findViewById(android.R.id.message);
-                if (messageView != null) {
-                    messageView.setTextSize(22);
-                }
+                        .show();
                 
                 return false;
             } else {
@@ -281,23 +256,15 @@ public class DeviceSettingsManager {
     public boolean setMobileNetwork(boolean enable) {
         try {
             // First show guidance dialog BEFORE opening settings
-            AlertDialog dialog = new AlertDialog.Builder(context, R.style.LargeDialogTheme)
+            new AlertDialog.Builder(context)
                     .setTitle(R.string.mobile_data_guide_title)
                     .setMessage(context.getString(enable ? 
                             R.string.mobile_data_guide_enable : 
                             R.string.mobile_data_guide_disable))
-                    .setPositiveButton(android.R.string.ok, (d, which) -> {
+                    .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                         openMobileDataSettings();
                     })
-                    .create();
-                    
-            dialog.show();
-            
-            // Make the dialog message larger
-            TextView messageView = dialog.findViewById(android.R.id.message);
-            if (messageView != null) {
-                messageView.setTextSize(22);
-            }
+                    .show();
             
             Log.i(TAG, "Showing mobile data guidance dialog");
             return false; // Return false because the setting wasn't automatically applied
@@ -339,23 +306,15 @@ public class DeviceSettingsManager {
             // Try a fallback intent if the first one failed
             try {
                 // Show the fallback guidance dialog
-                AlertDialog dialog = new AlertDialog.Builder(context, R.style.LargeDialogTheme)
+                new AlertDialog.Builder(context)
                         .setTitle(R.string.mobile_data_guide_title)
                         .setMessage(R.string.mobile_data_guide_fallback)
-                        .setPositiveButton(android.R.string.ok, (d, which) -> {
+                        .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                             Intent fallbackIntent = new Intent(Settings.ACTION_SETTINGS);
                             fallbackIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             context.startActivity(fallbackIntent);
                         })
-                        .create();
-                
-                dialog.show();
-                
-                // Make the dialog message larger
-                TextView messageView = dialog.findViewById(android.R.id.message);
-                if (messageView != null) {
-                    messageView.setTextSize(22);
-                }
+                        .show();
             } catch (Exception e2) {
                 Log.e(TAG, "Fallback settings open also failed: " + e2.getMessage(), e2);
             }

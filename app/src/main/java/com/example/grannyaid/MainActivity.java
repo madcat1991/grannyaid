@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -109,22 +108,14 @@ public class MainActivity extends AppCompatActivity {
     }
     
     private void showPermissionDialog() {
-        AlertDialog dialog = new AlertDialog.Builder(this, R.style.LargeDialogTheme)
+        new AlertDialog.Builder(this)
                 .setTitle(R.string.permission_required)
                 .setMessage(R.string.permission_rationale)
-                .setPositiveButton(android.R.string.ok, (d, which) -> {
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                     requestWriteSettingsPermission();
                 })
                 .setNegativeButton(android.R.string.cancel, null)
-                .create();
-                
-        dialog.show();
-        
-        // Make the dialog message larger
-        TextView messageView = dialog.findViewById(android.R.id.message);
-        if (messageView != null) {
-            messageView.setTextSize(22);
-        }
+                .show();
     }
     
     private void requestWriteSettingsPermission() {
@@ -132,22 +123,14 @@ public class MainActivity extends AppCompatActivity {
         intent.setData(Uri.parse("package:" + getPackageName()));
         
         // Show instruction dialog
-        AlertDialog dialog = new AlertDialog.Builder(this, R.style.LargeDialogTheme)
+        new AlertDialog.Builder(this)
                 .setTitle(R.string.permission_instruction_title)
                 .setMessage(R.string.permission_instruction_message)
-                .setPositiveButton(R.string.go_to_settings, (d, which) -> {
+                .setPositiveButton(R.string.go_to_settings, (dialog, which) -> {
                     startActivityForResult(intent, REQUEST_WRITE_SETTINGS);
                 })
                 .setCancelable(false)
-                .create();
-        
-        dialog.show();
-        
-        // Make dialog elements larger
-        TextView messageView = dialog.findViewById(android.R.id.message);
-        if (messageView != null) {
-            messageView.setTextSize(22);
-        }
+                .show();
     }
     
     @Override
@@ -164,22 +147,14 @@ public class MainActivity extends AppCompatActivity {
                     checkPermissions();
                 } else {
                     // Show failed dialog with instructions
-                    AlertDialog dialog = new AlertDialog.Builder(this, R.style.LargeDialogTheme)
+                    new AlertDialog.Builder(this)
                             .setTitle(R.string.permission_not_granted)
                             .setMessage(R.string.permission_failed_instructions)
-                            .setPositiveButton(R.string.try_again, (d, which) -> {
+                            .setPositiveButton(R.string.try_again, (dialog, which) -> {
                                 requestWriteSettingsPermission();
                             })
                             .setNegativeButton(android.R.string.cancel, null)
-                            .create();
-                    
-                    dialog.show();
-                    
-                    // Make dialog elements larger
-                    TextView messageView = dialog.findViewById(android.R.id.message);
-                    if (messageView != null) {
-                        messageView.setTextSize(22);
-                    }
+                            .show();
                 }
             }
         }

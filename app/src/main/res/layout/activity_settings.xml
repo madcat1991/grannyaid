@@ -12,11 +12,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Settings"
-        android:textSize="40sp"
+        android:textSize="32sp"
         android:textStyle="bold"
         android:textColor="#3F51B5"
         android:gravity="center"
-        android:layout_marginBottom="30dp" />
+        android:layout_marginBottom="24dp" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -33,17 +33,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Airplane Mode"
-                android:textSize="30sp"
+                android:textSize="24sp"
                 android:textColor="#000000"
-                android:layout_marginTop="24dp" />
+                android:layout_marginTop="16dp" />
                 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="(Will open Settings app)"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:textStyle="italic"
-                android:textColor="#444444"
+                android:textColor="#888888"
                 android:layout_marginTop="4dp" />
 
             <Switch
@@ -51,50 +51,44 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="OFF"
-                android:textSize="24sp"
-                android:padding="20dp"
-                android:minHeight="64dp"
-                android:layout_marginTop="8dp"
-                android:background="#E3F2FD"
-                android:layout_marginBottom="8dp" />
+                android:textSize="20sp"
+                android:padding="8dp"
+                android:layout_marginTop="8dp" />
 
             <!-- Bluetooth -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Bluetooth"
-                android:textSize="30sp"
+                android:textSize="24sp"
                 android:textColor="#000000"
-                android:layout_marginTop="24dp" />
+                android:layout_marginTop="16dp" />
 
             <Switch
                 android:id="@+id/bluetoothSwitch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="ON"
-                android:textSize="24sp"
-                android:padding="20dp"
-                android:minHeight="64dp"
-                android:layout_marginTop="8dp"
-                android:background="#E3F2FD"
-                android:layout_marginBottom="8dp" />
+                android:textSize="20sp"
+                android:padding="8dp"
+                android:layout_marginTop="8dp" />
 
             <!-- Wi-Fi -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Wi-Fi"
-                android:textSize="30sp"
+                android:textSize="24sp"
                 android:textColor="#000000"
-                android:layout_marginTop="24dp" />
+                android:layout_marginTop="16dp" />
                 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="(May open Settings app on newer devices)"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:textStyle="italic"
-                android:textColor="#444444"
+                android:textColor="#888888"
                 android:layout_marginTop="4dp" />
 
             <Switch
@@ -102,29 +96,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="ON"
-                android:textSize="24sp"
-                android:padding="20dp"
-                android:minHeight="64dp"
-                android:layout_marginTop="8dp"
-                android:background="#E3F2FD"
-                android:layout_marginBottom="8dp" />
+                android:textSize="20sp"
+                android:padding="8dp"
+                android:layout_marginTop="8dp" />
 
             <!-- Mobile Network (opens settings) -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Mobile Network"
-                android:textSize="30sp"
+                android:textSize="24sp"
                 android:textColor="#000000"
-                android:layout_marginTop="24dp" />
+                android:layout_marginTop="16dp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="(Will open Settings app when fixed)"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:textStyle="italic"
-                android:textColor="#444444"
+                android:textColor="#888888"
                 android:layout_marginTop="4dp" />
 
             <Switch
@@ -132,36 +123,29 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="ON"
-                android:textSize="24sp"
-                android:padding="20dp"
-                android:minHeight="64dp"
-                android:layout_marginTop="8dp"
-                android:background="#E3F2FD"
-                android:layout_marginBottom="8dp" />
+                android:textSize="20sp"
+                android:padding="8dp"
+                android:layout_marginTop="8dp" />
 
             <!-- Sound Volume -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Sound Volume"
-                android:textSize="30sp"
+                android:textSize="24sp"
                 android:textColor="#000000"
-                android:layout_marginTop="24dp" />
+                android:layout_marginTop="16dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:padding="20dp"
-                android:background="#E3F2FD"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:minHeight="64dp">
+                android:layout_marginTop="8dp">
 
                 <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:src="@android:drawable/ic_lock_silent_mode_off"
                     android:contentDescription="Sound icon" />
 
@@ -171,19 +155,16 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:max="100"
-                    android:progress="70"
-                    android:minHeight="36dp"
-                    android:progressDrawable="@android:drawable/progress_horizontal"
-                    android:thumbTint="#4CAF50" />
+                    android:progress="70" />
 
                 <TextView
                     android:id="@+id/soundVolumeText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="70%"
-                    android:textSize="26sp"
+                    android:textSize="20sp"
                     android:textColor="#000000"
-                    android:layout_marginStart="16dp" />
+                    android:layout_marginStart="8dp" />
             </LinearLayout>
 
             <!-- Earpiece Volume -->
@@ -191,24 +172,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Earpiece Volume"
-                android:textSize="30sp"
+                android:textSize="24sp"
                 android:textColor="#000000"
-                android:layout_marginTop="24dp" />
+                android:layout_marginTop="16dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:padding="20dp"
-                android:background="#E3F2FD"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:minHeight="64dp">
+                android:layout_marginTop="8dp">
 
                 <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:src="@android:drawable/ic_lock_silent_mode_off"
                     android:contentDescription="Earpiece icon" />
 
@@ -218,19 +195,16 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:max="100"
-                    android:progress="70"
-                    android:minHeight="36dp"
-                    android:progressDrawable="@android:drawable/progress_horizontal"
-                    android:thumbTint="#4CAF50" />
+                    android:progress="70" />
 
                 <TextView
                     android:id="@+id/earpieceVolumeText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="70%"
-                    android:textSize="26sp"
+                    android:textSize="20sp"
                     android:textColor="#000000"
-                    android:layout_marginStart="16dp" />
+                    android:layout_marginStart="8dp" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
@@ -239,13 +213,10 @@
         android:id="@+id/saveSettingsButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save Settings"
-        android:textSize="36sp"
+        android:text="SAVE SETTINGS"
+        android:textSize="24sp"
         android:backgroundTint="#4CAF50"
-        android:padding="24dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="16dp"
-        android:contentDescription="Save all settings"
-        android:minHeight="88dp" />
+        android:padding="16dp"
+        android:layout_marginTop="16dp" />
 
 </LinearLayout>
