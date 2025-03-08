@@ -2,10 +2,30 @@
 <resources>
     <string name="app_name">GrannyAid</string>
     <string name="fix_it">FIX IT</string>
+    <string name="need_permission">NEED PERMISSION</string>
     <string name="settings">Settings</string>
     <string name="save_settings">SAVE SETTINGS</string>
     <string name="settings_saved">Settings saved successfully!</string>
     <string name="settings_fixed">All settings have been fixed!</string>
-    <string name="permission_required">Permission required</string>
-    <string name="permission_rationale">This app needs special permissions to control your device settings. Please grant the permission in the next screen.</string>
+    <string name="settings_partially_fixed">Some settings were fixed. Others may require different permissions.</string>
+    <string name="settings_not_fixed">Could not fix settings. Please check app permissions.</string>
+    <string name="error_fixing_settings">Error trying to fix settings. Please try again.</string>
+    <string name="permission_required">Permission Required</string>
+    <string name="permission_rationale">This app needs permission to modify system settings to function properly. Please follow the instructions in the next screens.</string>
+    <string name="permission_instruction_title">How to Enable Permission</string>
+    <string name="permission_instruction_message">On the next screen:\n\n1. Tap \"Allow modifying system settings\" to switch it ON\n\n2. Tap the back button to return to the app</string>
+    <string name="permission_not_granted">Permission Not Granted</string>
+    <string name="permission_failed_instructions">You need to turn ON \"Allow modifying system settings\" for GrannyAid to work properly.\n\n1. Tap the toggle switch to turn it ON\n\n2. Press the back button to return to the app</string>
+    <string name="permission_granted">Permission granted successfully!</string>
+    <string name="bluetooth_permission_granted">Bluetooth permission granted!</string>
+    <string name="bluetooth_permission_denied">Bluetooth permission denied. Some features may not work.</string>
+    <string name="go_to_settings">Go to Settings</string>
+    <string name="try_again">Try Again</string>
+    <string name="mobile_data_guide_title">Mobile Data Settings</string>
+    <string name="mobile_data_guide_enable">Please follow these steps to turn ON Mobile Data:\n\n1. Look for \"Mobile data\", \"Cellular data\", or \"Data usage\" option\n\n2. Tap the switch to turn it ON\n\n3. Return to GrannyAid when finished</string>
+    <string name="mobile_data_guide_disable">Please follow these steps to turn OFF Mobile Data:\n\n1. Look for \"Mobile data\", \"Cellular data\", or \"Data usage\" option\n\n2. Tap the switch to turn it OFF\n\n3. Return to GrannyAid when finished</string>
+    <string name="mobile_data_guide_fallback">Please navigate to find Mobile Data settings:\n\n1. Look for \"Network &amp; Internet\" or \"Connections\"\n\n2. Then find \"Mobile Data\", \"Mobile Network\", or \"Data Usage\"\n\n3. Tap the switch to change it as needed\n\n4. Return to GrannyAid when finished</string>
+    <string name="wifi_guide_title">WiFi Settings</string>
+    <string name="wifi_guide_enable">Please follow these steps to turn ON WiFi:\n\n1. Find the WiFi option in Settings\n\n2. Tap the switch to turn it ON\n\n3. Return to GrannyAid when finished</string>
+    <string name="wifi_guide_disable">Please follow these steps to turn OFF WiFi:\n\n1. Find the WiFi option in Settings\n\n2. Tap the switch to turn it OFF\n\n3. Return to GrannyAid when finished</string>
 </resources>
