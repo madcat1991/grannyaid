@@ -2,6 +2,8 @@
 
 A simple Android application designed to help elderly people restore their phone settings with a single tap.
 
+Most of the codebase was developed with assistance from Claude Code.
+
 ## Purpose
 
 GrannyAid is designed for elderly users who may accidentally change critical phone settings and have difficulty navigating the phone's settings menu to restore them. With a single tap on the large "FIX IT" button, the app will automatically restore all settings to their predefined values.
@@ -32,7 +34,21 @@ GrannyAid is designed for elderly users who may accidentally change critical pho
 
 ## Technical Notes
 
-Some settings (like Mobile Network) may require specific permissions or system-level access that varies by Android version and device manufacturer. The app will attempt to change these settings but may not be successful on all devices.
+### System Settings Limitations
+
+Android restricts direct modification of certain system settings (especially Airplane Mode, Wi-Fi, and Mobile Network) for security reasons. These restrictions vary by Android version:
+
+- **Android 7-9**: Some settings can be changed with appropriate permissions
+- **Android 10+**: Direct programmatic changes to Airplane Mode, Wi-Fi, and Mobile Network are severely restricted
+
+### Our Solution
+
+To work around these limitations, GrannyAid:
+
+1. Attempts direct settings changes where permitted
+2. When direct changes are restricted, the app navigates the user to the appropriate settings screen with clear instructions
+
+This approach ensures the app remains useful across all Android versions while respecting system security boundaries.
 
 ## Building the App
 
@@ -43,7 +59,7 @@ Some settings (like Mobile Network) may require specific permissions or system-l
 
 2. **Clone and open**:
    ```
-   git clone https://github.com/yourusername/grannyaid.git
+   git clone https://github.com/madcat1991/grannyaid.git
    ```
    Open in Android Studio: File > Open > select the project folder
 
