@@ -165,8 +165,24 @@ public class DeviceSettingsManager {
             // So we use different intents based on Android version
             Intent intent;
             
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                // For Android 10+, use network settings which contains airplane mode
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) { // Android 14 (API 34)
+                // For Android 14+, use mobile network settings which now contains airplane mode
+                intent = new Intent(Settings.ACTION_NETWORK_OPERATOR_SETTINGS);
+                // Update the guidance dialog to show Android 14 specific instructions
+                new AlertDialog.Builder(context)
+                        .setTitle(R.string.airplane_guide_title)
+                        .setMessage(R.string.airplane_guide_android14)
+                        .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                            // Launch the intent only after showing instructions
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(intent);
+                        })
+                        .show();
+                
+                Log.i(TAG, "Showing Android 14 specific airplane mode guidance");
+                return;
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // For Android 10-13, use network settings which contains airplane mode
                 intent = new Intent(Settings.ACTION_NETWORK_OPERATOR_SETTINGS);
             } else {
                 // For older Android versions
